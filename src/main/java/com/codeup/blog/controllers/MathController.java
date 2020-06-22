@@ -17,7 +17,7 @@ public class MathController {
     @GetMapping("/subtract/{a}/from/{b}")
     @ResponseBody
     public String doMathSub(@PathVariable int a, @PathVariable int b) {
-        return "Subtraction a from b = " + (b + a);
+        return "Subtraction a from b = " + (b - a);
     }
 
     @GetMapping("/multiply/{a}/and/{b}")
