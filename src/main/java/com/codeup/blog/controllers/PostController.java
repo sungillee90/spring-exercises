@@ -19,12 +19,12 @@ public class PostController {
     @GetMapping("/posts/{id}")
     @ResponseBody
     public String doPostById(@PathVariable long id) {
-        return "View an individual(id =" + id + ")post";
+        return "View an individual (id = " + id + ") post";
     }
 
     @GetMapping("/posts/create")
     @ResponseBody
-    public String viewCreate() {
+    public String viewCreateForm() {
         return "view the form for creating a post";
     }
 
