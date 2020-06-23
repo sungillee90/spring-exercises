@@ -63,7 +63,7 @@ public class PostController {
 //        // edit the post
 //        foundPost.setTitle("This is cool title Testing");
 //        // save the post
-//        postsDao.save(foundPost);
+//        postsDao.save(foundPost); // UPDATE posts SET title = ?
 //        return "post updated";
 //    }
 
