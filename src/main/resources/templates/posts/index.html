@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/head :: head('Blog | All Posts')">
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+    <nav th:replace="fragments/navbar :: navbar" />
+    <div class="container">
+<!--        <div th:if="${id == null}">-->
+<!--            Post Not Found.-->
+<!--        </div>-->
+<!--        <div th:each="post : ${post}">-->
+            <h3 th:text="${post.title}">Title</h3>
+            <div th:text="${post.body}">Body</div>
+<!--        </div>-->
+    </div>
+    </body>
 </html>
