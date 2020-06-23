@@ -6,14 +6,34 @@
     </head>
     <body>
     <nav th:replace="fragments/navbar :: navbar">Navbar</nav>
-        <h1>Please guess a number.</h1>
-        <p>Your guessed number = <span th:text="${numberGuess}">test</span> </p>
+    <h1>Please guess/choose a number.</h1>
 
-        <p>Random Roll: <span th:text="${randomNumber}">random roll</span> </p>
-        <div>
-            <p th:if="${correct}"> You are correct!</p>
-<!--            <p th:if="${!correct}">Try again!</p>-->
-        </div>
+    <div class="container">
+        <a href="/roll-dice/1">Guess 1</a><br>
+        <a href="/roll-dice/2">Guess 2</a><br>
+        <a href="/roll-dice/3">Guess 3</a><br>
+        <a href="/roll-dice/4">Guess 4</a><br>
+        <a href="/roll-dice/5">Guess 5</a><br>
+        <a href="/roll-dice/6">Guess 6</a>
+    </div>
+
+    <div th:if="${myNumberGuess}">
+        <h2 th:text="${myNumberGuess}">
+            Your guessed number =
+        </h2>
+        <h3>
+            Random Roll =  <span th:text="${randomNumber}">random roll</span>
+        </h3>
+    </div>
+
+    <div>
+        <h3 th:if="${isCorrectGuess}">
+            You guessed correctly!
+        </h3>
+        <h3 th:if="${isCorrectGuess != null && !isCorrectGuess}">
+            Try again! You did not guess correctly.
+        </h3>
+    </div>
 
     </body>
 </html>

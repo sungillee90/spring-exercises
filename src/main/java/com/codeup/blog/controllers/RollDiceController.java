@@ -16,14 +16,15 @@ public class RollDiceController {
 
     @GetMapping("/roll-dice/{n}")
     public String rollDice(@PathVariable int n, Model model){
-        // StackOverFlow https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
+        //StackOverFlow https://stackoverflow.com/questions/5887709/getting-random-numbers-in-java
+        //Compare the guess # to the random number.
+        //Store if they guessed correctly in and attribute.
         int randomNumberGenerator = (int) (Math.random() * 6 + 1);
 
-        boolean correct = randomNumberGenerator == n;
-
-        model.addAttribute("numberGuess", n);
+        model.addAttribute("isCorrectGuess", randomNumberGenerator == n);
+        model.addAttribute("myNumberGuess", n);
         model.addAttribute("randomNumber",randomNumberGenerator);
-        model.addAttribute("correct", correct);
+
         return "roll-dice";
     }
 
