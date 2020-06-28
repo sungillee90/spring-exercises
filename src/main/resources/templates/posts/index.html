@@ -17,8 +17,12 @@
             Post Not Found.
         </div>
         <div th:each="post : ${posts}">
-            <h3 th:text="${post.title}">Title</h3>
+
+            <a th:href="'/posts/'+ ${post.getId()}">
+                <h3 th:text="${post.title}">Title</h3>
+            </a>
             <div th:text="${post.body}">Body</div>
+
         </div>
     </div>
     </body>
