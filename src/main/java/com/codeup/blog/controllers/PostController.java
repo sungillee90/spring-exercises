@@ -55,26 +55,46 @@ public class PostController {
         return "create a new post";
     }
 
-//    @PutMapping("/posts/{id}/edit")
-//    @ResponseBody
-//    public String update(@PathVariable long id) {
-//        // find a post
-//        Post foundPost = postsDao.getOne(id); // SELECT * FROM posts WHERE id = ?
-//        // edit the post
+    @GetMapping("/posts/{id}/edit")
+    public String showEditForm(Model model, @PathVariable long id) {
+        Post postToEdit = postsDao.getOne(id);
+        model.addAttribute("post", postToEdit);
+        return "posts/edit";
+    }
+
+    @PostMapping("/posts/{id}/edit")
+    @ResponseBody
+    public String update(@PathVariable long id,
+                         @RequestParam(name = "title") String title,
+                         @RequestParam(name = "body") String body) {
+        // find a post
+        Post foundPost = postsDao.getOne(id); // SELECT * FROM posts WHERE id = ?
+        // edit the post
 //        foundPost.setTitle("This is cool title Testing");
-//        // save the post
-//        postsDao.save(foundPost); // UPDATE posts SET title = ?
-//        return "post updated";
-//    }
+            // To make it dynamic
+        foundPost.setTitle(title);
+        foundPost.setBody(body);
+        // save the post
+        postsDao.save(foundPost); // UPDATE posts SET title = ?
+        return "post updated";
+    }
 
 
-//    @DeleteMapping("/posts/{id}/delete")
-//    @ResponseBody
-//    public String destroy(@PathVariable long id) {
-//        postsDao.deleteById(id);
-//        return "post Successfully deleted";
-//    }
+    @PostMapping("/posts/{id}/delete")
+    @ResponseBody
+    public String destroy(@PathVariable long id) {
+        postsDao.deleteById(id);
+        return "post Successfully deleted";
+    }
 
+    @GetMapping("/search")
+    public String searchResults(Model model, @RequestParam(name = "term") String term) {
+
+        List<Post> posts = postsDao.searchByTitleLike(term);
+
+        model.addAttribute("posts", posts);
+        return "/posts/index";
+    }
 
 
 }

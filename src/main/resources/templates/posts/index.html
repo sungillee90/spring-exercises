@@ -1,12 +1,18 @@
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="fragments/header :: head('Blog | All Posts')">
+    <head th:replace="fragments/header :: forHeader('Blog | For Car People')">
         <meta charset="UTF-8">
         <title>Title</title>
     </head>
     <body>
-    <nav th:replace="fragments/navbar :: navbar" />
+    <nav th:replace="fragments/navbarForBlog :: forNavbar" />
     <div class="container">
+        <!-- isCorrectGuess != null && !isCorrectGuess -->
         <div th:if="${noPostsFound == null}">
             Post Not Found.
         </div>
