@@ -2,6 +2,7 @@ package com.codeup.blog.controllers;
 
 import com.codeup.blog.daos.PostsRepository;
 import com.codeup.blog.models.Post;
+import com.codeup.blog.models.User;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -37,7 +38,7 @@ public class PostController {
     @GetMapping("/posts/{id}")
     public String doPostById(@PathVariable long id, Model model) {
         model.addAttribute("postId", id);
-        model.addAttribute("post", new Post("Testing Purpose","This is my first post made"));
+        model.addAttribute("post", new Post("Testing Purpose","This is my first post made", null));
         return "posts/show";
     }
 
@@ -50,7 +51,7 @@ public class PostController {
     @PostMapping("/posts/create")
     @ResponseBody
     public String create() {
-        Post newPost = new Post("dependency Injection Test","Testing");
+        Post newPost = new Post("dependency Injection Test","Testing", null);
         postsDao.save(newPost);
         return "create a new post";
     }
