@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="fragments/header :: header('Blog Post | View Post')">
+    <head th:replace="fragments/header :: forHeader('Blog Post | View Post')">
         <meta charset="UTF-8">
         <title>Title</title>
     </head>
@@ -14,6 +14,10 @@
                 <div th:text="${postId}">ID</div>
                 <h3 th:text="${post.title}">Title</h3>
                 <div th:text="${post.body}">Body</div>
+                <div>Created by
+                    <span th:text="${post.owner.username}"></span><br>
+                    <span th:text="${post.owner.email}"></span>
+                </div>
             </div>
         </div>
     </body>
