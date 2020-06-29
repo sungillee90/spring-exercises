@@ -1,6 +1,7 @@
 package com.codeup.blog.controllers;
 
 import com.codeup.blog.daos.PostsRepository;
+import com.codeup.blog.daos.UserRepository;
 import com.codeup.blog.models.Post;
 import com.codeup.blog.models.User;
 import org.springframework.stereotype.Controller;
@@ -16,9 +17,11 @@ public class PostController {
 
     // Dependency injection
     private PostsRepository postsDao;
+    private UserRepository usersDao;
     // Dependency injection
-    public PostController(PostsRepository postsRepository) {
+    public PostController(PostsRepository postsRepository, UserRepository userRepository) {
         postsDao = postsRepository;
+        usersDao = userRepository;
     }
 
     @GetMapping("/posts")
@@ -37,8 +40,9 @@ public class PostController {
 
     @GetMapping("/posts/{id}")
     public String doPostById(@PathVariable long id, Model model) {
+        Post post = postsDao.getOne(id);
         model.addAttribute("postId", id);
-        model.addAttribute("post", new Post("Testing Purpose","This is my first post made", null));
+        model.addAttribute("post", post);
         return "posts/show";
     }
 
@@ -51,7 +55,8 @@ public class PostController {
     @PostMapping("/posts/create")
     @ResponseBody
     public String create() {
-        Post newPost = new Post("dependency Injection Test","Testing", null);
+        User currentUser = usersDao.getOne(3L);
+        Post newPost = new Post("dependency Injection Test","Testing", currentUser);
         postsDao.save(newPost);
         return "create a new post";
     }
