@@ -4,6 +4,7 @@ import com.codeup.blog.daos.PostsRepository;
 import com.codeup.blog.daos.UserRepository;
 import com.codeup.blog.models.Post;
 import com.codeup.blog.models.User;
+import com.codeup.blog.services.EmailService;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -18,10 +19,12 @@ public class PostController {
     // Dependency injection
     private PostsRepository postsDao;
     private UserRepository usersDao;
+    private final EmailService emailService;
     // Dependency injection
-    public PostController(PostsRepository postsRepository, UserRepository userRepository) {
-        postsDao = postsRepository;
-        usersDao = userRepository;
+    public PostController(PostsRepository postsRepository, UserRepository userRepository, EmailService emailService) {
+        this.postsDao = postsRepository;
+        this.usersDao = userRepository;
+        this.emailService = emailService;
     }
 
     @GetMapping("/posts")
@@ -62,6 +65,7 @@ public class PostController {
 //        Post newPost = new Post(title, body, currentUser);
         postToBeSaved.setOwner(currentUser);
         Post savePost = postsDao.save(postToBeSaved);
+        emailService.prepareAndSend(savePost, "A new post has been creating", "An post has been created with the id of " + savePost.getId());
         return "redirect:/posts/" + savePost.getId();
     }
 
