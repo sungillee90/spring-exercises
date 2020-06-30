@@ -47,18 +47,21 @@ public class PostController {
     }
 
     @GetMapping("/posts/create")
-    @ResponseBody
-    public String viewCreateForm() {
-        return "view the form for creating a post";
+    public String viewCreateForm(Model model) {
+        model.addAttribute("post", new Post());
+        return "posts/create";
     }
 
     @PostMapping("/posts/create")
-    @ResponseBody
-    public String create() {
+    public String create(
+            //        name att in create html   Place holder Java
+            @RequestParam(value = "title") String title,
+            @RequestParam(value = "body") String body
+    ) {
         User currentUser = usersDao.getOne(3L);
-        Post newPost = new Post("dependency Injection Test","Testing", currentUser);
-        postsDao.save(newPost);
-        return "create a new post";
+        Post newPost = new Post(title, body, currentUser);
+        Post savePost = postsDao.save(newPost);
+        return "redirect:/posts/" + savePost.getId();
     }
 
     @GetMapping("/posts/{id}/edit")
