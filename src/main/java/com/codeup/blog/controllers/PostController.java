@@ -4,6 +4,7 @@ import com.codeup.blog.daos.PostsRepository;
 import com.codeup.blog.daos.UserRepository;
 import com.codeup.blog.models.Post;
 import com.codeup.blog.models.User;
+import com.codeup.blog.services.EmailService;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -18,10 +19,12 @@ public class PostController {
     // Dependency injection
     private PostsRepository postsDao;
     private UserRepository usersDao;
+    private final EmailService emailService;
     // Dependency injection
-    public PostController(PostsRepository postsRepository, UserRepository userRepository) {
-        postsDao = postsRepository;
-        usersDao = userRepository;
+    public PostController(PostsRepository postsRepository, UserRepository userRepository, EmailService emailService) {
+        this.postsDao = postsRepository;
+        this.usersDao = userRepository;
+        this.emailService = emailService;
     }
 
     @GetMapping("/posts")
@@ -47,18 +50,23 @@ public class PostController {
     }
 
     @GetMapping("/posts/create")
-    @ResponseBody
-    public String viewCreateForm() {
-        return "view the form for creating a post";
+    public String viewCreateForm(Model viewModel) {
+        viewModel.addAttribute("post", new Post());
+        return "posts/create";
     }
 
     @PostMapping("/posts/create")
-    @ResponseBody
-    public String create() {
+    public String create( @ModelAttribute Post postToBeSaved
+//            //        name att in create html   Place holder Java
+//            @RequestParam(value = "title") String title,
+//            @RequestParam(value = "body") String body
+    ) {
         User currentUser = usersDao.getOne(3L);
-        Post newPost = new Post("dependency Injection Test","Testing", currentUser);
-        postsDao.save(newPost);
-        return "create a new post";
+//        Post newPost = new Post(title, body, currentUser);
+        postToBeSaved.setOwner(currentUser);
+        Post savePost = postsDao.save(postToBeSaved);
+        emailService.prepareAndSend(savePost, "A new post has been creating", "An post has been created with the id of " + savePost.getId());
+        return "redirect:/posts/" + savePost.getId();
     }
 
     @GetMapping("/posts/{id}/edit")
@@ -69,20 +77,20 @@ public class PostController {
     }
 
     @PostMapping("/posts/{id}/edit")
-    @ResponseBody
-    public String update(@PathVariable long id,
-                         @RequestParam(name = "title") String title,
-                         @RequestParam(name = "body") String body) {
+    public String update(@ModelAttribute Post postToEdit) {
+        User currentUser = usersDao.getOne(3L);
+        postToEdit.setOwner(currentUser);
         // find a post
-        Post foundPost = postsDao.getOne(id); // SELECT * FROM posts WHERE id = ?
-        // edit the post
-//        foundPost.setTitle("This is cool title Testing");
-            // To make it dynamic
-        foundPost.setTitle(title);
-        foundPost.setBody(body);
+//        Post foundPost = postsDao.getOne(id); // SELECT * FROM posts WHERE id = ?
+//        // edit the post
+////        foundPost.setTitle("This is cool title Testing");
+//            // To make it dynamic
+//        foundPost.setTitle(title);
+//        foundPost.setBody(body);
         // save the post
-        postsDao.save(foundPost); // UPDATE posts SET title = ?
-        return "post updated";
+
+        postsDao.save(postToEdit); // UPDATE posts SET title = ?
+        return "redirect:/posts/" + postToEdit.getId();
     }
 
 
