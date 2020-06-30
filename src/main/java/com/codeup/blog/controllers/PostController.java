@@ -47,20 +47,21 @@ public class PostController {
     }
 
     @GetMapping("/posts/create")
-    public String viewCreateForm(Model model) {
-        model.addAttribute("post", new Post());
+    public String viewCreateForm(Model viewModel) {
+        viewModel.addAttribute("post", new Post());
         return "posts/create";
     }
 
     @PostMapping("/posts/create")
-    public String create(
-            //        name att in create html   Place holder Java
-            @RequestParam(value = "title") String title,
-            @RequestParam(value = "body") String body
+    public String create( @ModelAttribute Post postToBeSaved
+//            //        name att in create html   Place holder Java
+//            @RequestParam(value = "title") String title,
+//            @RequestParam(value = "body") String body
     ) {
         User currentUser = usersDao.getOne(3L);
-        Post newPost = new Post(title, body, currentUser);
-        Post savePost = postsDao.save(newPost);
+//        Post newPost = new Post(title, body, currentUser);
+        postToBeSaved.setOwner(currentUser);
+        Post savePost = postsDao.save(postToBeSaved);
         return "redirect:/posts/" + savePost.getId();
     }
 
@@ -72,20 +73,20 @@ public class PostController {
     }
 
     @PostMapping("/posts/{id}/edit")
-    @ResponseBody
-    public String update(@PathVariable long id,
-                         @RequestParam(name = "title") String title,
-                         @RequestParam(name = "body") String body) {
+    public String update(@ModelAttribute Post postToEdit) {
+        User currentUser = usersDao.getOne(3L);
+        postToEdit.setOwner(currentUser);
         // find a post
-        Post foundPost = postsDao.getOne(id); // SELECT * FROM posts WHERE id = ?
-        // edit the post
-//        foundPost.setTitle("This is cool title Testing");
-            // To make it dynamic
-        foundPost.setTitle(title);
-        foundPost.setBody(body);
+//        Post foundPost = postsDao.getOne(id); // SELECT * FROM posts WHERE id = ?
+//        // edit the post
+////        foundPost.setTitle("This is cool title Testing");
+//            // To make it dynamic
+//        foundPost.setTitle(title);
+//        foundPost.setBody(body);
         // save the post
-        postsDao.save(foundPost); // UPDATE posts SET title = ?
-        return "post updated";
+
+        postsDao.save(postToEdit); // UPDATE posts SET title = ?
+        return "redirect:/posts/" + postToEdit.getId();
     }
 
 
