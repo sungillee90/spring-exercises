@@ -5,6 +5,7 @@ import com.codeup.blog.daos.UserRepository;
 import com.codeup.blog.models.Post;
 import com.codeup.blog.models.User;
 import com.codeup.blog.services.EmailService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -61,7 +62,8 @@ public class PostController {
 //            @RequestParam(value = "title") String title,
 //            @RequestParam(value = "body") String body
     ) {
-        User currentUser = usersDao.getOne(3L);
+        User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
 //        Post newPost = new Post(title, body, currentUser);
         postToBeSaved.setOwner(currentUser);
         Post savePost = postsDao.save(postToBeSaved);
