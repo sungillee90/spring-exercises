@@ -97,6 +97,18 @@ public class BlogIntegrationTests {
 
     // Read
     @Test
+    public void testPostsIndex() throws Exception {
+        Post existingPost = postsDao.findAll().get(0);
+
+        // Makes a Get request to /posts and verifies that we get some of the static text of the posts/index.html template and at least the title from the first Post is present in the template.
+        this.mvc.perform(get("/posts"))
+                .andExpect(status().isOk())
+                // Test the static content of the page
+                .andExpect(content().string(containsString("Latest posts")))
+                // Test the dynamic content of the page
+                .andExpect(content().string(containsString(existingPost.getTitle())));
+    }
+    @Test
     public void testShowPost() throws Exception {
 
         Post existingPost = postsDao.findAll().get(0);
@@ -108,6 +120,27 @@ public class BlogIntegrationTests {
                 .andExpect(content().string(containsString(existingPost.getBody())));
     }
 
+    // Update
+    @Test
+    public void testEditPost() throws Exception {
+        // Gets the first Post for tests purposes
+        Post existingPost = postsDao.findAll().get(0);
+
+        // Makes a Post request to /posts/{id}/edit and expect a redirection to the Post show page
+        this.mvc.perform(
+                post("/posts/" + existingPost.getId() + "/edit").with(csrf())
+                        .session((MockHttpSession) httpSession)
+                        .param("title", "edited title")
+                        .param("body", "edited body"))
+                .andExpect(status().is3xxRedirection());
+
+        // Makes a GET request to /posts/{id} and expect a redirection to the Post show page
+        this.mvc.perform(get("/posts/" + existingPost.getId()))
+                .andExpect(status().isOk())
+                // Test the dynamic content of the page
+                .andExpect(content().string(containsString("edited title")))
+                .andExpect(content().string(containsString("edited body")));
+    }
 
 
 }

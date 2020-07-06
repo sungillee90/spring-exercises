@@ -80,7 +80,7 @@ public class PostController {
 
     @PostMapping("/posts/{id}/edit")
     public String update(@ModelAttribute Post postToEdit) {
-        User currentUser = usersDao.getOne(3L);
+        User currentUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         postToEdit.setOwner(currentUser);
         // find a post
 //        Post foundPost = postsDao.getOne(id); // SELECT * FROM posts WHERE id = ?
