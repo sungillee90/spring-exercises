@@ -80,5 +80,15 @@ public class BlogIntegrationTests {
         assertNotNull(httpSession);
     }
 
-
+    @Test
+    public void testCreatePost() throws Exception {
+        // Makes a Post request to /posts/create and expect a redirection to the Post
+        this.mvc.perform(
+                post("/posts/create").with(csrf())
+                        .session((MockHttpSession) httpSession)
+                        // Add all the required parameters to your request like this
+                        .param("title", "test")
+                        .param("body", "blog body"))
+                .andExpect(status().is3xxRedirection());
+    }
 }
