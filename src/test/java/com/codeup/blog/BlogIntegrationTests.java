@@ -2,6 +2,7 @@ package com.codeup.blog;
 
 import com.codeup.blog.daos.PostsRepository;
 import com.codeup.blog.daos.UserRepository;
+import com.codeup.blog.models.Post;
 import com.codeup.blog.models.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,11 +18,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.HttpSession;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @RunWith(SpringRunner.class)
@@ -80,6 +82,7 @@ public class BlogIntegrationTests {
         assertNotNull(httpSession);
     }
 
+    // Create
     @Test
     public void testCreatePost() throws Exception {
         // Makes a Post request to /posts/create and expect a redirection to the Post
@@ -91,4 +94,20 @@ public class BlogIntegrationTests {
                         .param("body", "blog body"))
                 .andExpect(status().is3xxRedirection());
     }
+
+    // Read
+    @Test
+    public void testShowPost() throws Exception {
+
+        Post existingPost = postsDao.findAll().get(0);
+
+        // Makes a Get request to /posts/{id} and expect a redirection to the Post show page
+        this.mvc.perform(get("/posts/" + existingPost.getId()))
+                .andExpect(status().isOk())
+                // Test the dynamic content of the page
+                .andExpect(content().string(containsString(existingPost.getBody())));
+    }
+
+
+
 }
