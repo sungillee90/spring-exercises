@@ -142,5 +142,26 @@ public class BlogIntegrationTests {
                 .andExpect(content().string(containsString("edited body")));
     }
 
+    // Delete
+    @Test
+    public void testDeletePost() throws Exception {
+        // Creates a test Post to be deleted
+        this.mvc.perform(
+                post("/posts/create").with(csrf())
+                        .session((MockHttpSession) httpSession)
+                        .param("title", "post to be deleted")
+                        .param("body", "won't last long"))
+                .andExpect(status().is3xxRedirection());
+
+        // Get the recent Post that matches the title
+        Post existingPost = postsDao.findByTitle("post to be deleted");
+
+        // Makes a Post request to /posts/{id}/delete and expect a redirection to the Posts index
+        this.mvc.perform(
+                post("/posts/" + existingPost.getId() + "/delete").with(csrf())
+                        .session((MockHttpSession) httpSession)
+                        .param("id", String.valueOf(existingPost.getId())))
+                .andExpect(status().is3xxRedirection());
+    }
 
 }
